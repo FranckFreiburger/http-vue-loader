@@ -3,7 +3,7 @@ load .vue files from your html/js
 
 ## examples
 
-my-component.vue
+`my-component.vue`
 ```html
 <template>
 	<div class="hello">Hello {{who}}</div>
@@ -24,8 +24,9 @@ module.exports = {
 	background-color: #ffe;
 }
 </style>
-
 ```
+
+`myFile.html`
 
 ```html
 ...
@@ -38,7 +39,7 @@ module.exports = {
 		...
 ```
 
-or
+or, using `httpVueLoaderRegister`
 
 ```html
 ...
