@@ -28,6 +28,8 @@ module.exports = {
 
 `myFile.html`
 
+using `httpVueLoader()`
+
 ```html
 ...
 <script type="text/javascript">
@@ -39,7 +41,7 @@ module.exports = {
 		...
 ```
 
-or, using `httpVueLoaderRegister`
+or, using `httpVueLoaderRegister()`
 
 ```html
 ...
