@@ -1,8 +1,9 @@
 # http-vue-loader
 load .vue files from your html/js
 
-# example
-{{{
+# examples
+
+```
 <script type="text/javascript">
 
 	new Vue({
@@ -10,11 +11,11 @@ load .vue files from your html/js
 			scrollbar: httpVueLoader('scrollbar.vue')
 		},
 		...
-}}}
+```
 
 or
 
-{{{
+```
 <script type="text/javascript">
 
 	httpVueLoaderRegister(Vue, 'scrollbar.vue');
@@ -24,7 +25,7 @@ or
 			'scrollbar'
 		},
 		...
-}}}
+```
 
 
 # Dependances
@@ -33,6 +34,7 @@ or
 * es6-promise (optional)
 
 
+# API
 
 httpVueLoader(url)
 
