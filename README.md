@@ -28,11 +28,12 @@ module.exports = {
 ```
 
 ```html
+...
 <script type="text/javascript">
 
 	new Vue({
 		components: {
-			scrollbar: httpVueLoader('my-component.vue')
+			'my-component': httpVueLoader('my-component.vue')
 		},
 		...
 ```
@@ -40,13 +41,14 @@ module.exports = {
 or
 
 ```html
+...
 <script type="text/javascript">
 
 	httpVueLoaderRegister(Vue, 'my-component.vue');
 
 	new Vue({
 		components: [
-			'scrollbar'
+			'my-component'
 		},
 		...
 ```
@@ -67,15 +69,15 @@ Latest ✔ | Latest ✔ | ? | ? | Latest ✔ | 10+ ✔ |
 
 ## API
 
-##### httpVueLoader(url)
+##### httpVueLoader(`url`)
 
-url: any url to a .vue file
+`url`: any url to a .vue file
 
 
-##### httpVueLoaderRegister(vue, url)
+##### httpVueLoaderRegister(`vue`, `url`)
 
-vue: a Vue instance  
-url: any url to a .vue file
+`vue`: a Vue instance  
+`url`: any url to a .vue file
 
 
 ## How it works
