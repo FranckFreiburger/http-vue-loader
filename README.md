@@ -60,13 +60,12 @@ Latest ✔ | Latest ✔ | ? | ? | Latest ✔ | 10+ ✔ |
 
 
 ## Dependances
-* [https://vuejs.org/](Vue.js 2)
-* [https://github.com/mzabriskie/axios](axios)
-* [https://github.com/stefanpenner/es6-promise](es6-promise) (optional)
+* [Vue.js 2](https://vuejs.org/)
+* [axios](https://github.com/mzabriskie/axios)
+* [es6-promise](https://github.com/stefanpenner/es6-promise) (optional, except for IE)
 
 
 ## API
-
 
 ##### httpVueLoader(url)
 
