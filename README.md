@@ -1,5 +1,5 @@
 # http-vue-loader
-load .vue files from your html/js
+Load .vue files directly from your html/js. No node.js environment, no build step.
 
 ## examples
 
