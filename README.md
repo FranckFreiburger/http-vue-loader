@@ -93,7 +93,8 @@ Latest ✔ | Latest ✔ | ? | ? | Latest ✔ | 10+ ✔ |
 
 ## Notes
 
-The aim of http-vue-loader is to quickly test .vue components without any compilation step, however, for production, I recomand to use [webpack module bundler](https://webpack.github.io/docs/) with [vue-loader](https://github.com/vuejs/vue-loader), see also [why Vue.js doesn't support templateURL)(https://vuejs.org/2015/10/28/why-no-template-url/).
+The aim of http-vue-loader is to quickly test .vue components without any compilation step.  
+However, for production, I recommend to use [webpack module bundler](https://webpack.github.io/docs/) with [vue-loader](https://github.com/vuejs/vue-loader), see also [why Vue.js doesn't support templateURL](https://vuejs.org/2015/10/28/why-no-template-url/).  
 Note also that `http-vue-loader` only supports text/x-template for `<template>`, text/javascript for `<script>` and text/css for `<style>`
 
 ## Credits
