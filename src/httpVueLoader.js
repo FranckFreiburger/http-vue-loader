@@ -7,8 +7,12 @@ function httpVueLoader(url) {
 			
 			var template = '';
 			var module = { exports:{} };
-		
-			var fragment = document.createRange().createContextualFragment(vueFile.data);
+
+			var doc = document.implementation.createHTMLDocument('');
+			doc.body.innerHTML = vueFile.data;
+			var range = doc.createRange();
+			range.selectNodeContents(doc.body);
+			var fragment = range.extractContents();
 
 			for ( var it = fragment.firstChild; it; it = it.nextSibling ) {
 				
