@@ -66,7 +66,7 @@ Latest ✔ | Latest ✔ | ? | ? | Latest ✔ | 9+ ✔ |
 
 ## Dependances
 * [Vue.js 2](https://vuejs.org/)
-* [axios](https://github.com/mzabriskie/axios)
+* [axios](https://github.com/mzabriskie/axios) (Can easily be replaced by another lib)
 * [es6-promise](https://github.com/stefanpenner/es6-promise) (optional, except for IE)
 
 
