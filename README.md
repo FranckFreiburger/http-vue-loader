@@ -101,7 +101,7 @@ Note also that `http-vue-loader` only supports text/x-template for `<template>`,
 
 ## Caveat
 
-Due to a lake of suitable API in Google Chrome and Internet Explorer, syntax errors in the `<script>` section are only reported on FireFox.
+Due to the lack of suitable API in Google Chrome and Internet Explorer, syntax errors in the `<script>` section are only reported on FireFox.
 
 
 ## Credits
