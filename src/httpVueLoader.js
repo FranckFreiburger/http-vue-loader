@@ -52,7 +52,7 @@ function httpVueLoader(url) {
 }
 
 function httpVueLoaderRegister(Vue, url) {
-	
+
 	var name = url.match(/([^/]+)\.vue|$/)[1];
-	Vue.component(name, httpLoadVue(name));
+	Vue.component(name, httpVueLoader(url));
 }
