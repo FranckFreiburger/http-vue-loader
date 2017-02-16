@@ -56,6 +56,32 @@ or, using `httpVueLoaderRegister()`
 		...
 ```
 
+or, using `httpVueLoader` as a plugin
+
+```html
+...
+<script type="text/javascript">
+
+	Vue.use(httpVueLoader);
+
+	new Vue({
+		components: {
+			'my-component': 'url:my-component.vue'
+		},
+		...
+```
+
+or, using an array
+```
+	new Vue({
+		components: [
+			'url:my-component.vue'
+		},
+		...
+
+```
+
+
 
 ## Browser Support
 

@@ -1,4 +1,9 @@
-function httpVueLoader(url) {
+function componentNameFromURL(url) {
+	
+	return url.match(/([^/]+)\.vue|$/)[1];
+}
+
+function httpVueLoader(url, name) {
 
 	return function(resolve, reject) {
 		
@@ -26,15 +31,11 @@ function httpVueLoader(url) {
 							Function('module', it.textContent)(module);
 						} catch(ex) {
 							
-							if ( ex.lineNumber ) {
-								
-								var vueFileData = res.data.replace(/\r?\n/g, '\n');
-								var lineNumber = vueFileData.substr(0, vueFileData.indexOf(it.textContent)).split('\n').length + ex.lineNumber - 1;
-								throw new (ex.constructor)(ex.message, res.request.responseURL, lineNumber);
-							} else {
-								
+							if ( !('lineNumber' in ex) )
 								throw ex;
-							}
+							var vueFileData = res.data.replace(/\r?\n/g, '\n');
+							var lineNumber = vueFileData.substr(0, vueFileData.indexOf(it.textContent)).split('\n').length + ex.lineNumber - 1;
+							throw new (ex.constructor)(ex.message, res.request.responseURL, lineNumber);
 						}
 						break;
 					case 'STYLE':
@@ -45,6 +46,10 @@ function httpVueLoader(url) {
 				}
 			}
 			
+			if ( module.exports.name === undefined )
+				if ( name !== undefined )
+					module.exports.name = name;
+
 			module.exports.template = template;
 			resolve(module.exports);
 		}, reject);
@@ -53,6 +58,35 @@ function httpVueLoader(url) {
 
 function httpVueLoaderRegister(Vue, url) {
 
-	var name = url.match(/([^/]+)\.vue|$/)[1];
-	Vue.component(name, httpVueLoader(url));
+	Vue.component(componentNameFromURL(url), httpVueLoader(url));
 }
+
+
+httpVueLoader.install = function(Vue) {
+	
+	Vue.mixin({
+		
+		beforeCreate: function () {
+			
+			var components = this.$options.components;
+			
+			for ( var componentName in components ) {
+				
+				if ( typeof(components[componentName]) === 'string' && components[componentName].substr(0, 4) === 'url:' ) {
+
+					var url = components[componentName].substr(4);
+					if ( isNaN(componentName) ) {
+						
+						components[componentName] = httpVueLoader(url, componentName);	
+					} else {
+						
+						var name = componentNameFromURL(url);
+						components[componentName] = Vue.component(name, httpVueLoader(url, name));
+					}
+				}
+			}
+		}
+	});
+}
+
+
