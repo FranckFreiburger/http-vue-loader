@@ -11,6 +11,12 @@ function httpVueLoader(url, name) {
 		.then(function(res) {
 			
 			var template = '';
+
+			function require(moduleName) {
+				
+				return window[moduleName];
+			}
+			
 			var module = { exports:{} };
 
 			var doc = document.implementation.createHTMLDocument('');
@@ -28,7 +34,7 @@ function httpVueLoader(url, name) {
 						break;
 					case 'SCRIPT':
 						try {
-							Function('module', it.textContent)(module);
+							Function('module', 'require', it.textContent)(module, require);
 						} catch(ex) {
 							
 							if ( !('lineNumber' in ex) ) {
