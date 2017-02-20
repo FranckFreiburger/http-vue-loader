@@ -31,8 +31,11 @@ function httpVueLoader(url, name) {
 							Function('module', it.textContent)(module);
 						} catch(ex) {
 							
-							if ( !('lineNumber' in ex) )
-								throw ex;
+							if ( !('lineNumber' in ex) ) {
+								
+								reject(ex);
+								return
+							}
 							var vueFileData = res.data.replace(/\r?\n/g, '\n');
 							var lineNumber = vueFileData.substr(0, vueFileData.indexOf(it.textContent)).split('\n').length + ex.lineNumber - 1;
 							throw new (ex.constructor)(ex.message, res.request.responseURL, lineNumber);
