@@ -1,4 +1,4 @@
-function componentNameFromURL(url) {
+httpVueLoader.componentNameFromURL = function(url) {
 	
 	return url.match(/([^/]+)\.vue|$/)[1];
 }
@@ -67,7 +67,7 @@ function httpVueLoader(url, name) {
 
 function httpVueLoaderRegister(Vue, url) {
 
-	Vue.component(componentNameFromURL(url), httpVueLoader(url));
+	Vue.component(httpVueLoader.componentNameFromURL(url), httpVueLoader(url));
 }
 
 
@@ -89,7 +89,7 @@ httpVueLoader.install = function(Vue) {
 						components[componentName] = httpVueLoader(url, componentName);	
 					} else {
 						
-						var name = componentNameFromURL(url);
+						var name = httpVueLoader.componentNameFromURL(url);
 						components[componentName] = Vue.component(name, httpVueLoader(url, name));
 					}
 				}
