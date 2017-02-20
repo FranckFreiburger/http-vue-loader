@@ -21,9 +21,7 @@ function httpVueLoader(url, name) {
 
 			var doc = document.implementation.createHTMLDocument('');
 			doc.body.innerHTML = res.data;
-			var range = doc.createRange();
-			range.selectNodeContents(doc.body);
-			var fragment = range.extractContents();
+			var fragment = doc.body;
 			
 			
 			for ( var it = fragment.firstChild; it; it = it.nextSibling ) {
