@@ -31,19 +31,19 @@ httpVueLoader.scopeStyles = function(styleElt, scopeName) {
 			sheet.deleteRule(i);
 			sheet.insertRule(scopedRule, i);
 		}
-
-		styleElt.sheet.disabled = false;
 	}
 
-	styleElt.sheet.disabled = true;
 
 	try {
 		process();
 	} catch (ex) {
+		
+		styleElt.sheet.disabled = true;
 		styleElt.addEventListener('load', function onStyleLoaded() {
 
 			styleElt.removeEventListener('load', onStyleLoaded);
 			process();
+			styleElt.sheet.disabled = false;
 		});
 	}
 }
