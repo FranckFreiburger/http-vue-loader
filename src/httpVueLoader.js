@@ -29,7 +29,11 @@ httpVueLoader.scopeStyles = function(styleElt, scopeName) {
 			sheet.deleteRule(i);
 			sheet.insertRule(scopedRule, i);
 		}
+
+		styleElt.sheet.disabled = false;
 	}
+
+	styleElt.sheet.disabled = true;
 
 	try {
 		process();
