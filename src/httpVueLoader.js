@@ -1,3 +1,5 @@
+'use strict';
+
 httpVueLoader.componentNameFromURL = function(url) {
 
 	return url.match(/([^/]+)\.vue|$/)[1];
