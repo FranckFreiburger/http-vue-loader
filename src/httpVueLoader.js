@@ -21,7 +21,7 @@ httpVueLoader.scopeStyles = function(styleElt, scopeName) {
 			rule.selectorText.split(/\s*,\s*/).forEach(function(sel) {
 
 				scopedSelectors.push(scopeName+' '+sel);
-				var segments = sel.match(/([^ ]+)( .+)?/);
+				var segments = sel.match(/([^ :]+)(.+)?/);
 				scopedSelectors.push(segments[1] + scopeName + (segments[2]||''));
 			});
 
