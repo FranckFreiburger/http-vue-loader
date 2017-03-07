@@ -1,0 +1,24 @@
+{
+  "name": "http-vue-loader",
+  "version": "1.0.0",
+  "description": "Load .vue files directly from your html/js. No node.js environment, no build step.",
+  "main": "./src/httpVueLoader.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FranckFreiburger/http-vue-loader.git"
+  },
+  "keywords": [
+    "http",
+    "vue",
+    "loader"
+  ],
+  "author": "Franck Freiburger",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FranckFreiburger/http-vue-loader/issues"
+  },
+  "homepage": "https://github.com/FranckFreiburger/http-vue-loader#readme"
+}
