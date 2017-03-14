@@ -91,7 +91,7 @@ Latest ✔ | Latest ✔ | ? | ? | Latest ✔ | 9+ ✔ |
 
 
 ## Dependances
-* [Vue.js 2](https://vuejs.org/) [Full](https://vuejs.org/v2/guide/installation.html#Explanation-of-Different-Builds)
+* [Vue.js 2](https://vuejs.org/) ([Full](https://vuejs.org/v2/guide/installation.html#Explanation-of-Different-Builds))
 * [axios](https://github.com/mzabriskie/axios) (Can easily be replaced by another lib)
 * [es6-promise](https://github.com/stefanpenner/es6-promise) (optional, except for IE)
 
@@ -114,7 +114,8 @@ Latest ✔ | Latest ✔ | ? | ? | Latest ✔ | 9+ ✔ |
 1. http request the vue file
 1. load the vue file in a document fragment
 1. process each section (template, script and style)
-1. return a promise to Vue (async components)
+1. return a promise to Vue.js (async components)
+1. then Vue.js compiles and cache the component
 
 
 ## Notes
