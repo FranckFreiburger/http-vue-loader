@@ -104,46 +104,51 @@ function httpVueLoader(url, name) {
 				}
 			}
 
+			return Promise.resolve(module.exports)
+			.then(function(exports) {
 
-			var hasScoped = false;
-			for ( var i = 0; i < styleElts.length; ++i ) {
+				var hasScoped = false;
+				for ( var i = 0; i < styleElts.length; ++i ) {
 
-				if ( styleElts[i].hasAttribute('scoped') ) {
+					if ( styleElts[i].hasAttribute('scoped') ) {
 
-					hasScoped = true;
-					break;
+						hasScoped = true;
+						break;
+					}
 				}
-			}
 
 
-			var scopeId = '';
-			if ( templateElt !== null ) {
+				var scopeId = '';
+				if ( templateElt !== null ) {
 
-				if ( hasScoped ) {
+					if ( hasScoped ) {
 
-					scopeId = 'data-s-' + (httpVueLoader.scopeIndex++).toString(36);
-					(templateElt.content || templateElt).firstElementChild.setAttribute(scopeId, '');
+						scopeId = 'data-s-' + (httpVueLoader.scopeIndex++).toString(36);
+						(templateElt.content || templateElt).firstElementChild.setAttribute(scopeId, '');
+					}
+					exports.template = templateElt.innerHTML;
 				}
-				module.exports.template = templateElt.innerHTML;
-			}
 
 
-			for ( var i = 0; i < styleElts.length; ++i ) {
+				for ( var i = 0; i < styleElts.length; ++i ) {
 
-				var style = document.createElement('style');
-				style.textContent = styleElts[i].textContent; // style.styleSheet.cssText = styleElts[i].textContent;
-				document.getElementsByTagName('head')[0].appendChild(style);
-				if ( hasScoped )
-					httpVueLoader.scopeStyles(style, '['+scopeId+']');
-			}
+					var style = document.createElement('style');
+					style.textContent = styleElts[i].textContent; // style.styleSheet.cssText = styleElts[i].textContent;
+					document.getElementsByTagName('head')[0].appendChild(style);
+					if ( hasScoped )
+						httpVueLoader.scopeStyles(style, '['+scopeId+']');
+				}
 
 
-			if ( module.exports.name === undefined )
-				if ( name !== undefined )
-					module.exports.name = name;
+				if ( exports.name === undefined )
+					if ( name !== undefined )
+						exports.name = name;
+				
+				return exports;
+			});
 
-			resolve(module.exports);
-		}, reject);
+		})
+		.then(resolve, reject);
 	}
 }
 
