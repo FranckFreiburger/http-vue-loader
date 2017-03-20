@@ -33,8 +33,8 @@ httpVueLoader.scopeStyles = function(styleElt, scopeName) {
 		}
 	}
 
-
 	try {
+		// firefox may fail sheet.cssRules with InvalidAccessError
 		process();
 	} catch (ex) {
 
@@ -43,7 +43,7 @@ httpVueLoader.scopeStyles = function(styleElt, scopeName) {
 
 			styleElt.removeEventListener('load', onStyleLoaded);
 			
-			// firefox: need this timeout or document.importNode(style,true)
+			// firefox need this timeout otherwise we have to use document.importNode(style, true)
 			setTimeout(function() {
 	
 				process();
@@ -74,16 +74,13 @@ function httpVueLoader(url, name) {
 			}
 			
 			var module = { exports:{} };
-
 			var templateElt = null;
 			var scriptElt = null;
 			var styleElts = [];
-
-			var doc = document.implementation.createHTMLDocument('');
-			
 			var baseURI = getRelativeBase(url);
-			
-			// IE requires the base to come with the style data
+			var doc = document.implementation.createHTMLDocument('');
+
+			// IE requires the <base> to come with <style>
 			doc.body.innerHTML = (baseURI ? '<base href="'+baseURI+'">' : '') + res.data;
 	
 			for ( var it = doc.body.firstChild; it; it = it.nextSibling ) {
@@ -100,7 +97,6 @@ function httpVueLoader(url, name) {
 						break;
 				}
 			}
-
 
 			if ( scriptElt !== null ) {
 
@@ -132,7 +128,6 @@ function httpVueLoader(url, name) {
 					headElt.insertBefore(tmpBaseElt, headElt.firstChild);
 				}
 
-				
 				var scopeId = '';
 				function getScopeId(templateRootElement) {
 					
@@ -144,7 +139,6 @@ function httpVueLoader(url, name) {
 					return scopeId;
 				}
 
-
 				for ( var i = 0; i < styleElts.length; ++i ) {
 
 					var style = styleElts[i];
@@ -152,12 +146,12 @@ function httpVueLoader(url, name) {
 
 					if ( scoped ) {
 						
-						// firefox does not tolerate this attribute
-						style.removeAttribute('scoped');
-						
 						// no template, no scopable style
 						if ( templateElt === null )
 							continue;
+						
+						// firefox does not tolerate this attribute
+						style.removeAttribute('scoped');
 					}
 					
 					headElt.appendChild(style);
