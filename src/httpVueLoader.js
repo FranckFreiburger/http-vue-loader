@@ -1,9 +1,15 @@
 'use strict';
 
-httpVueLoader.componentNameFromURL = function(url) {
-	
-	return url.match(/([^/]+)\.vue|$/)[1];
+
+httpVueLoader.parseComponentURL = function(url) {
+
+	var comp = url.match(/(.*?)([^/]+?)\/?(\.vue)?(?:\?|#|$)/);
+	return {
+		name: comp[2],
+		url: comp[1] + comp[2] + (comp[3] === undefined ? '/index.vue' : comp[3])
+	}
 }
+
 
 httpVueLoader.scopeStyles = function(styleElt, scopeName) {
 
@@ -53,10 +59,11 @@ httpVueLoader.scopeStyles = function(styleElt, scopeName) {
 	}
 }
 
+
 httpVueLoader.scopeIndex = 0;
 
-function httpVueLoader(url, name) {
-	
+httpVueLoader.load = function(url, name) {
+
 	function getRelativeBase(url) {
 		
 		var pos = url.lastIndexOf('/');
@@ -179,9 +186,17 @@ function httpVueLoader(url, name) {
 }
 
 
-function httpVueLoaderRegister(Vue, url) {
+function httpVueLoader(url, name) {
 
-	Vue.component(httpVueLoader.componentNameFromURL(url), httpVueLoader(url));
+	var comp = httpVueLoader.parseComponentURL(url);
+	return httpVueLoader.load(comp.url, name);
+}
+
+
+function httpVueLoaderRegister(Vue, url) {
+	
+	var comp = httpVueLoader.parseComponentURL(url);
+	Vue.component(comp.name, httpVueLoader.load(comp.url));
 }
 
 
@@ -197,15 +212,12 @@ httpVueLoader.install = function(Vue) {
 				
 				if ( typeof(components[componentName]) === 'string' && components[componentName].substr(0, 4) === 'url:' ) {
 
-					var url = components[componentName].substr(4);
-					if ( isNaN(componentName) ) {
-						
-						components[componentName] = httpVueLoader(url, componentName);	
-					} else {
-						
-						var name = httpVueLoader.componentNameFromURL(url);
-						components[componentName] = Vue.component(name, httpVueLoader(url, name));
-					}
+					var comp = httpVueLoader.parseComponentURL(components[componentName].substr(4));
+					
+					if ( isNaN(componentName) )
+						components[componentName] = httpVueLoader.load(comp.url, componentName);	
+					else
+						components[componentName] = Vue.component(comp.name, httpVueLoader.load(comp.url, comp.name));
 				}
 			}
 		}
