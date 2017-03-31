@@ -72,8 +72,8 @@ httpVueLoader.load = function(url, name) {
 
 	return function(resolve, reject) {
 		
-		axios.get(url)
-		.then(function(res) {
+		httpVueLoader.httpRequest(url)
+		.then(function(responseText) {
 
 			function require(moduleName) {
 				
@@ -88,7 +88,7 @@ httpVueLoader.load = function(url, name) {
 			var doc = document.implementation.createHTMLDocument('');
 
 			// IE requires the <base> to come with <style>
-			doc.body.innerHTML = (baseURI ? '<base href="'+baseURI+'">' : '') + res.data;
+			doc.body.innerHTML = (baseURI ? '<base href="'+baseURI+'">' : '') + responseText;
 	
 			for ( var it = doc.body.firstChild; it; it = it.nextSibling ) {
 				
@@ -116,10 +116,11 @@ httpVueLoader.load = function(url, name) {
 						reject(ex);
 						return
 					}
-					var vueFileData = res.data.replace(/\r?\n/g, '\n');
+					var vueFileData = responseText.replace(/\r?\n/g, '\n');
 					var lineNumber = vueFileData.substr(0, vueFileData.indexOf(scriptElt.textContent)).split('\n').length + ex.lineNumber - 1;
-					throw new (ex.constructor)(ex.message, res.request.responseURL, lineNumber);
+					throw new (ex.constructor)(ex.message, url, lineNumber);
 				}
+				
 			}
 			
 			return Promise.resolve(module.exports)
@@ -221,5 +222,19 @@ httpVueLoader.install = function(Vue) {
 				}
 			}
 		}
+	});
+}
+
+httpVueLoader.httpRequest = function(url) {
+	
+	return new Promise(function(resolve, reject) {
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', url, false);
+		xhr.send(null);
+		if ( xhr.status === 200 )
+			resolve(xhr.responseText);
+		else
+    		reject(xhr.status, xhr.statusText);
 	});
 }

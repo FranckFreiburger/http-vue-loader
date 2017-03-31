@@ -78,7 +78,6 @@ or, using an array
 			'url:my-component.vue'
 		},
 		...
-
 ```
 
 
@@ -91,8 +90,7 @@ Latest ✔ | Latest ✔ | ? | ? | Latest ✔ | 9+ ✔ |
 
 
 ## Dependances
-* [Vue.js 2](https://vuejs.org/) ([Full](https://vuejs.org/v2/guide/installation.html#Explanation-of-Different-Builds))
-* [axios](https://github.com/mzabriskie/axios) (Can easily be replaced by another lib)
+* [Vue.js 2](https://vuejs.org/) ([compiler and runtime](https://vuejs.org/v2/guide/installation.html#Explanation-of-Different-Builds))
 * [es6-promise](https://github.com/stefanpenner/es6-promise) (optional, except for IE)
 
 
@@ -107,6 +105,27 @@ Latest ✔ | Latest ✔ | ? | ? | Latest ✔ | 9+ ✔ |
 
 `vue`: a Vue instance  
 `url`: any url to a .vue file
+
+
+##### httpVueLoader.httpRequest(`url`)
+
+This is the default httpLoader.  
+
+Use axios instead of the default http loader:
+```
+httpVueLoader.httpRequest = function(url) {
+	
+	return axios.get(url)
+	.then(function(res) {
+		
+		return res.data;
+	})
+	.catch(function(err) {
+		
+		return Promise.reject(err.status);
+	});
+}
+```
 
 
 ## How it works
