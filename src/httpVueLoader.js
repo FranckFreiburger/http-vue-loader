@@ -235,6 +235,6 @@ httpVueLoader.httpRequest = function(url) {
 		if ( xhr.status === 200 )
 			resolve(xhr.responseText);
 		else
-    		reject(xhr.status, xhr.statusText);
+    		reject(xhr.status);
 	});
 }
