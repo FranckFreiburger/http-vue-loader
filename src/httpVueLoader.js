@@ -18,7 +18,7 @@ httpVueLoader.scopeStyles = function(styleElt, scopeName) {
 		var sheet = styleElt.sheet;
 		var rules = sheet.cssRules;
 		
-		for ( var i = 0; i < rules.length ; ++i ) {
+		for ( var i = 0; i < rules.length; ++i ) {
 			
 			var rule = rules[i];
 			if ( rule.type !== 1 )
@@ -125,7 +125,7 @@ httpVueLoader.load = function(url, name) {
 				if ( scriptElt !== null ) {
 
 					try {
-						Function('module', 'require', scriptElt.textContent)(module, httpVueLoader.require);
+						Function('exports', 'require', 'module', scriptElt.textContent).call(module.exports, module.exports, httpVueLoader.require, module);
 					} catch(ex) {
 						
 						if ( !('lineNumber' in ex) ) {
