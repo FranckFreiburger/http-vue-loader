@@ -43,19 +43,25 @@ httpVueLoader.scopeStyles = function(styleElt, scopeName) {
 		// firefox may fail sheet.cssRules with InvalidAccessError
 		process();
 	} catch (ex) {
-
-		styleElt.sheet.disabled = true;
-		styleElt.addEventListener('load', function onStyleLoaded() {
-
-			styleElt.removeEventListener('load', onStyleLoaded);
+		
+		if ( ex instanceof DOMException && ex.code === DOMException.INVALID_ACCESS_ERR ) {
 			
-			// firefox need this timeout otherwise we have to use document.importNode(style, true)
-			setTimeout(function() {
-	
-				process();
-				styleElt.sheet.disabled = false;
-			})
-		});
+			styleElt.sheet.disabled = true;
+			styleElt.addEventListener('load', function onStyleLoaded() {
+
+				styleElt.removeEventListener('load', onStyleLoaded);
+				
+				// firefox need this timeout otherwise we have to use document.importNode(style, true)
+				setTimeout(function() {
+		
+					process();
+					styleElt.sheet.disabled = false;
+				})
+			});
+			return;
+		}
+		
+		throw ex;
 	}
 }
 
