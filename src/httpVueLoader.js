@@ -88,11 +88,6 @@ httpVueLoader.load = function(url, name) {
 		httpVueLoader.httpRequest(url)
 		.then(function(responseText) {
 
-			function require(moduleName) {
-				
-				return window[moduleName];
-			}
-			
 			var templateElt = null;
 			var scriptElt = null;
 			var styleElts = [];
@@ -130,7 +125,7 @@ httpVueLoader.load = function(url, name) {
 				if ( scriptElt !== null ) {
 
 					try {
-						Function('module', 'require', scriptElt.textContent)(module, require);
+						Function('module', 'require', scriptElt.textContent)(module, httpVueLoader.require);
 					} catch(ex) {
 						
 						if ( !('lineNumber' in ex) ) {
@@ -259,4 +254,9 @@ httpVueLoader.httpRequest = function(url) {
 		else
     		reject(xhr.status);
 	});
+}
+
+httpVueLoader.require = function(moduleName) {
+	
+	return window[moduleName];
 }
