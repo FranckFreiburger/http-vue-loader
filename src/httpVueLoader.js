@@ -69,6 +69,19 @@ httpVueLoader.load = function(url, name) {
 		var pos = url.lastIndexOf('/');
 		return url.substr(0, pos+1);
 	}
+	
+	function normalizeContent(elt) {
+		
+		if ( elt === null || !elt.hasAttribute('src') )
+			return Promise.resolve();
+
+		return httpVueLoader.httpRequest(elt.getAttribute('src'))
+		.then(function(content) {
+
+			elt.removeAttribute('src');
+			elt.innerHTML = content;
+		});
+	}
 
 	return function(resolve, reject) {
 		
@@ -80,7 +93,6 @@ httpVueLoader.load = function(url, name) {
 				return window[moduleName];
 			}
 			
-			var module = { exports:{} };
 			var templateElt = null;
 			var scriptElt = null;
 			var styleElts = [];
@@ -105,82 +117,92 @@ httpVueLoader.load = function(url, name) {
 				}
 			}
 
-			if ( scriptElt !== null ) {
 
-				try {
-					Function('module', 'require', scriptElt.textContent)(module, require);
-				} catch(ex) {
-					
-					if ( !('lineNumber' in ex) ) {
+			return Promise.all(Array.prototype.concat(
+				normalizeContent(templateElt), 
+				normalizeContent(scriptElt), 
+				styleElts.map(function(item) { return normalizeContent(item) })
+			))
+			.then(function() {
+				
+				var module = { exports:{} };
+
+				if ( scriptElt !== null ) {
+
+					try {
+						Function('module', 'require', scriptElt.textContent)(module, require);
+					} catch(ex) {
 						
-						reject(ex);
-						return
+						if ( !('lineNumber' in ex) ) {
+							
+							reject(ex);
+							return
+						}
+						var vueFileData = responseText.replace(/\r?\n/g, '\n');
+						var lineNumber = vueFileData.substr(0, vueFileData.indexOf(scriptElt.textContent)).split('\n').length + ex.lineNumber - 1;
+						throw new (ex.constructor)(ex.message, url, lineNumber);
 					}
-					var vueFileData = responseText.replace(/\r?\n/g, '\n');
-					var lineNumber = vueFileData.substr(0, vueFileData.indexOf(scriptElt.textContent)).split('\n').length + ex.lineNumber - 1;
-					throw new (ex.constructor)(ex.message, url, lineNumber);
+				
 				}
 				
-			}
-			
-			return Promise.resolve(module.exports)
-			.then(function(exports) {
-				
-				var headElt = document.head || document.getElementsByTagName('head')[0];
-
-				if ( baseURI ) {
+				return Promise.resolve(module.exports)
+				.then(function(exports) {
 					
-					// firefox and chrome need the <base> to be set while inserting the <style> in the document
-					var tmpBaseElt = document.createElement('base');
-					tmpBaseElt.href = baseURI;
-					headElt.insertBefore(tmpBaseElt, headElt.firstChild);
-				}
+					var headElt = document.head || document.getElementsByTagName('head')[0];
 
-				var scopeId = '';
-				function getScopeId(templateRootElement) {
-					
-					if ( scopeId === '' ) {
+					if ( baseURI ) {
 						
-						scopeId = 'data-s-' + (httpVueLoader.scopeIndex++).toString(36);
-						(templateElt.content || templateElt).firstElementChild.setAttribute(scopeId, '');
+						// firefox and chrome need the <base> to be set while inserting the <style> in the document
+						var tmpBaseElt = document.createElement('base');
+						tmpBaseElt.href = baseURI;
+						headElt.insertBefore(tmpBaseElt, headElt.firstChild);
 					}
-					return scopeId;
-				}
 
-				for ( var i = 0; i < styleElts.length; ++i ) {
-
-					var style = styleElts[i];
-					var scoped = style.hasAttribute('scoped');
-
-					if ( scoped ) {
+					var scopeId = '';
+					function getScopeId(templateRootElement) {
 						
-						// no template, no scopable style
-						if ( templateElt === null )
-							continue;
+						if ( scopeId === '' ) {
+							
+							scopeId = 'data-s-' + (httpVueLoader.scopeIndex++).toString(36);
+							(templateElt.content || templateElt).firstElementChild.setAttribute(scopeId, '');
+						}
+						return scopeId;
+					}
+
+					for ( var i = 0; i < styleElts.length; ++i ) {
+
+						var style = styleElts[i];
+						var scoped = style.hasAttribute('scoped');
+
+						if ( scoped ) {
+							
+							// no template, no scopable style
+							if ( templateElt === null )
+								continue;
+							
+							// firefox does not tolerate this attribute
+							style.removeAttribute('scoped');
+						}
 						
-						// firefox does not tolerate this attribute
-						style.removeAttribute('scoped');
+						headElt.appendChild(style);
+						
+						if ( scoped )
+							httpVueLoader.scopeStyles(style, '['+getScopeId()+']');
 					}
 					
-					headElt.appendChild(style);
+					if ( baseURI )
+						headElt.removeChild(tmpBaseElt);
 					
-					if ( scoped )
-						httpVueLoader.scopeStyles(style, '['+getScopeId()+']');
-				}
-				
-				if ( baseURI )
-					headElt.removeChild(tmpBaseElt);
-				
-				if ( templateElt !== null )
-					exports.template = templateElt.innerHTML;
+					if ( templateElt !== null )
+						exports.template = templateElt.innerHTML;
 
-				if ( exports.name === undefined )
-					if ( name !== undefined )
-						exports.name = name;
-				
-				return exports;
+					if ( exports.name === undefined )
+						if ( name !== undefined )
+							exports.name = name;
+					
+					return exports;
+				});				
 			});
-
 		})
 		.then(resolve, reject);
 	}
