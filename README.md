@@ -85,6 +85,7 @@ or, using an array
 * `<template>`, `<script>` and `<style>` support the `src` attribute.
 * `<style scoped>` is supported.
 * `module.exports` may be a promise.
+* Support of relative urls in `<template>` and `<style>` sections.
 
 
 ## Browser Support
