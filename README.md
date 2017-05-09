@@ -85,7 +85,7 @@ or, using an array
 * `<style scoped>` is supported.
 * `module.exports` may be a promise.
 * Support of relative urls in `<template>` and `<style>` sections.
-* Support custom scripting langage `<script lang="coffee">` (see VueLoader.langProcessor).
+* Support custom scripting language `<script lang="coffee">` (see VueLoader.langProcessor).
 * `http-vue-loader` only supports text/x-template for `<template>` and text/css for `<style>`.
 
 
@@ -136,8 +136,8 @@ httpVueLoader.httpRequest = function(url) {
 
 ##### httpVueLoader.langProcessor
 
-This is an object that contains langage processors related to the `lang` attribute of the `<script>` section.  
-The langage is a simple function that accepts a script source as argument and returns a javascript script source.  
+This is an object that contains language processors related to the `lang` attribute of the `<script>` section.  
+The language is a simple function that accepts a script source as argument and returns a javascript script source.  
 
 Example:
 
