@@ -81,11 +81,12 @@ or, using an array
 ```
 
 ## Features
-* `http-vue-loader` only supports text/x-template for `<template>`, text/javascript for `<script>` and text/css for `<style>`.
 * `<template>`, `<script>` and `<style>` support the `src` attribute.
 * `<style scoped>` is supported.
 * `module.exports` may be a promise.
 * Support of relative urls in `<template>` and `<style>` sections.
+* Support custom scripting langage `<script lang="coffee">` (see VueLoader.langProcessor).
+* `http-vue-loader` only supports text/x-template for `<template>` and text/css for `<style>`.
 
 
 ## Browser Support
@@ -131,6 +132,45 @@ httpVueLoader.httpRequest = function(url) {
 		return Promise.reject(err.status);
 	});
 }
+```
+
+##### httpVueLoader.langProcessor
+
+This is an object that contains langage processors related to the `lang` attribute of the `<script>` section.  
+The langage is a simple function that accepts a script source as argument and returns a javascript script source.  
+
+Example:
+
+```
+<script src="http://coffeescript.org/v1/browser-compiler/coffee-script.js"></script>
+<script src="httpVueLoader.js"></script>
+
+<script>
+
+httpVueLoader.langProcessor.coffee = function(scriptText) {
+
+	return window.CoffeeScript.compile(scriptText, {bare: true});
+}
+
+</script>
+```
+
+Then, in you `.vue` file:
+
+```
+...
+<script lang="coffee">
+
+module.exports =
+  components: {}
+  data: ->
+    {}
+  computed: {}
+  methods: {}
+  
+</script>
+...
+
 ```
 
 

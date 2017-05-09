@@ -129,9 +129,12 @@ httpVueLoader.load = function(url, name) {
 				var module = { exports:{} };
 
 				if ( scriptElt !== null ) {
+					
+					var lang = scriptElt.hasAttribute('lang') ? scriptElt.getAttribute('lang').toLowerCase() : 'javascript';
+					var script = httpVueLoader.langProcessor[lang](scriptElt.textContent);
 
 					try {
-						Function('exports', 'require', 'module', scriptElt.textContent).call(module.exports, module.exports, httpVueLoader.require, module);
+						Function('exports', 'require', 'module', script).call(module.exports, module.exports, httpVueLoader.require, module);
 					} catch(ex) {
 						
 						if ( !('lineNumber' in ex) ) {
@@ -140,7 +143,7 @@ httpVueLoader.load = function(url, name) {
 							return
 						}
 						var vueFileData = responseText.replace(/\r?\n/g, '\n');
-						var lineNumber = vueFileData.substr(0, vueFileData.indexOf(scriptElt.textContent)).split('\n').length + ex.lineNumber - 1;
+						var lineNumber = vueFileData.substr(0, vueFileData.indexOf(script)).split('\n').length + ex.lineNumber - 1;
 						throw new (ex.constructor)(ex.message, url, lineNumber);
 					}
 				
@@ -248,6 +251,14 @@ httpVueLoader.install = function(Vue) {
 	});
 }
 
+httpVueLoader.langProcessor = {
+	
+	javascript: function(scriptText) {
+
+		return scriptText;
+	}
+}
+
 httpVueLoader.httpRequest = function(url) {
 	
 	return new Promise(function(resolve, reject) {
@@ -258,7 +269,7 @@ httpVueLoader.httpRequest = function(url) {
 		if ( xhr.status === 200 )
 			resolve(xhr.responseText);
 		else
-    		reject(xhr.status);
+			reject(xhr.status);
 	});
 }
 
