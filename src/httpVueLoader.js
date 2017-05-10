@@ -197,8 +197,11 @@ httpVueLoader.load = function(url, name) {
 					if ( baseURI )
 						headElt.removeChild(tmpBaseElt);
 					
-					if ( templateElt !== null )
-						exports.template = templateElt.innerHTML;
+					if ( templateElt !== null ) {
+						
+						var lang = templateElt.hasAttribute('lang') ? templateElt.getAttribute('lang').toLowerCase() : 'html';
+						exports.template = httpVueLoader.langProcessor[lang](templateElt.innerHTML);
+					}
 
 					if ( exports.name === undefined )
 						if ( name !== undefined )
@@ -256,6 +259,10 @@ httpVueLoader.langProcessor = {
 	javascript: function(scriptText) {
 
 		return scriptText;
+	},
+	html: function(htmlText) {
+
+		return htmlText;
 	}
 }
 
