@@ -76,17 +76,117 @@ httpVueLoader.load = function(url, name) {
 		return url.substr(0, pos+1);
 	}
 	
-	function normalizeContent(elt) {
-		
-		if ( elt === null || !elt.hasAttribute('src') )
-			return Promise.resolve();
+	function getContentText(elt) {
 
-		return httpVueLoader.httpRequest(elt.getAttribute('src'))
-		.then(function(content) {
+		if ( elt.tagName === 'TEMPLATE' )
+			return elt.innerHTML;
+		else
+			return elt.textContent;
+	}
 
-			elt.removeAttribute('src');
+	function setContentText(elt, content) {
+
+		if ( elt.tagName === 'TEMPLATE' )
 			elt.innerHTML = content;
+		else
+		if ( elt.tagName === 'SCRIPT' )
+			elt.textContent = content;
+		else
+		if ( elt.tagName === 'STYLE' ) {
+			
+			elt.textContent = content;
+		}
+	}
+	
+	function StyleContext(elt, baseURI) {
+		
+		this.elt = elt;
+
+		this.getContent = function() {
+			
+			return this.elt.textContent;
+		}
+		
+		this.setContent = function(content) {
+			
+			var headElt = document.head || document.getElementsByTagName('head')[0];
+			if ( baseURI ) {
+				
+				// firefox and chrome need the <base> to be set while inserting the <style> in the document
+				var tmpBaseElt = document.createElement('base');
+				tmpBaseElt.href = baseURI;
+				headElt.insertBefore(tmpBaseElt, headElt.firstChild);
+			}
+			
+			this.elt.textContent = content;
+
+			if ( baseURI )
+				headElt.removeChild(tmpBaseElt);
+		}
+	}
+	
+	function TemplateContext(elt, baseURI) {
+
+		this.elt = elt;
+
+		this.getContent = function() {
+			
+			return this.elt.innerHTML;
+		}
+		
+		this.setContent = function(content) {
+			
+			this.elt.innerHTML = content;
+		}
+	}
+
+	function ScriptContext(elt, baseURI) {
+
+		this.elt = elt;
+
+		this.getContent = function() {
+			
+			return this.elt.textContent;
+		}
+		
+		this.setContent = function(content) {
+			
+			this.elt.textContent = content;
+		}
+	}
+	
+	
+
+	function normalizeContent(eltCx) {
+		
+		if ( eltCx.elt === null || !eltCx.elt.hasAttribute('src') ) {
+			
+			var p = Promise.resolve(null);
+		} else {
+			
+			var p = httpVueLoader.httpRequest(eltCx.elt.getAttribute('src'))
+			.then(function(content) {
+
+				eltCx.elt.removeAttribute('src');
+				return content;
+			})
+		}
+		
+		p
+		.then(function(content) {
+			
+			if ( eltCx.elt.hasAttribute('lang') )
+				return httpVueLoader.langProcessor[eltCx.elt.getAttribute('lang').toLowerCase()](content === null ? eltCx.getContent() : content);
+			return content;
+		})
+		.then(function(content) {
+			
+			if ( content !== null ) {
+				
+				eltCx.setContent(content);
+			}
 		});
+		return p;
 	}
 
 	return function(resolve, reject) {
@@ -118,11 +218,13 @@ httpVueLoader.load = function(url, name) {
 				}
 			}
 
-
 			return Promise.all(Array.prototype.concat(
-				normalizeContent(templateElt), 
-				normalizeContent(scriptElt), 
-				styleElts.map(function(item) { return normalizeContent(item) })
+				normalizeContent(new TemplateContext(templateElt, baseURI)),
+				normalizeContent(new ScriptContext(scriptElt, baseURI)),
+				styleElts.map(function(styleElt) {
+
+					return normalizeContent(new StyleContext(styleElt, baseURI))
+				})
 			))
 			.then(function() {
 				
@@ -130,11 +232,8 @@ httpVueLoader.load = function(url, name) {
 
 				if ( scriptElt !== null ) {
 					
-					var lang = scriptElt.hasAttribute('lang') ? scriptElt.getAttribute('lang').toLowerCase() : 'javascript';
-					var script = httpVueLoader.langProcessor[lang](scriptElt.textContent);
-
 					try {
-						Function('exports', 'require', 'module', script).call(module.exports, module.exports, httpVueLoader.require, module);
+						Function('exports', 'require', 'module', scriptElt.textContent).call(module.exports, module.exports, httpVueLoader.require, module);
 					} catch(ex) {
 						
 						if ( !('lineNumber' in ex) ) {
@@ -168,6 +267,10 @@ httpVueLoader.load = function(url, name) {
 						if ( scopeId === '' ) {
 							
 							scopeId = 'data-s-' + (httpVueLoader.scopeIndex++).toString(36);
+							
+							//if ( (templateElt.content || templateElt).firstElementChild === null )
+							//	debugger;
+							
 							(templateElt.content || templateElt).firstElementChild.setAttribute(scopeId, '');
 						}
 						return scopeId;
@@ -176,6 +279,7 @@ httpVueLoader.load = function(url, name) {
 					for ( var i = 0; i < styleElts.length; ++i ) {
 
 						var style = styleElts[i];
+						
 						var scoped = style.hasAttribute('scoped');
 
 						if ( scoped ) {
@@ -197,11 +301,8 @@ httpVueLoader.load = function(url, name) {
 					if ( baseURI )
 						headElt.removeChild(tmpBaseElt);
 					
-					if ( templateElt !== null ) {
-						
-						var lang = templateElt.hasAttribute('lang') ? templateElt.getAttribute('lang').toLowerCase() : 'html';
-						exports.template = httpVueLoader.langProcessor[lang](templateElt.innerHTML);
-					}
+					if ( templateElt !== null )
+						exports.template = templateElt.innerHTML;
 
 					if ( exports.name === undefined )
 						if ( name !== undefined )
@@ -254,18 +355,6 @@ httpVueLoader.install = function(Vue) {
 	});
 }
 
-httpVueLoader.langProcessor = {
-	
-	javascript: function(scriptText) {
-
-		return scriptText;
-	},
-	html: function(htmlText) {
-
-		return htmlText;
-	}
-}
-
 httpVueLoader.httpRequest = function(url) {
 	
 	return new Promise(function(resolve, reject) {
@@ -284,6 +373,8 @@ httpVueLoader.httpRequest = function(url) {
 		xhr.send(null);
 	});
 }
+
+httpVueLoader.langProcessor = {};
 
 httpVueLoader.require = function(moduleName) {
 	
