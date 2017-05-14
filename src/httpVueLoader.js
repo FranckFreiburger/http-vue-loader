@@ -262,14 +262,19 @@ httpVueLoader.langProcessor = {
 httpVueLoader.httpRequest = function(url) {
 	
 	return new Promise(function(resolve, reject) {
-
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', url, false);
+		xhr.open('GET', url);
+		
+		xhr.onreadystatechange = function() {
+			if(xhr.readyState === 4) {
+				if ( xhr.status === 200 )
+				  resolve(xhr.responseText);
+				else
+				  reject(xhr.status);
+			}
+		}
+		
 		xhr.send(null);
-		if ( xhr.status === 200 )
-			resolve(xhr.responseText);
-		else
-			reject(xhr.status);
 	});
 }
 
