@@ -4,7 +4,7 @@ Load .vue files directly from your html/js. No node.js environment, no build ste
 ## examples
 
 `my-component.vue`
-```html
+```vue
 <template>
 	<div class="hello">Hello {{who}}</div>
 </template>
@@ -85,8 +85,7 @@ or, using an array
 * `<style scoped>` is supported.
 * `module.exports` may be a promise.
 * Support of relative urls in `<template>` and `<style>` sections.
-* Support custom scripting language `<script lang="coffee">` (see VueLoader.langProcessor).
-* `http-vue-loader` only supports text/x-template for `<template>` and text/css for `<style>`.
+* Support custom CSS, HTML and scripting languages, eg. `<script lang="coffee">` (see VueLoader.langProcessor).
 
 
 ## Browser Support
@@ -139,9 +138,9 @@ httpVueLoader.httpRequest = function(url) {
 This is an object that contains language processors related to the `lang` attribute of the `<script>` section.  
 The language is a simple function that accepts a script source as argument and returns a javascript script source.  
 
-Example:
+Example - CoffeeScript:
 
-```
+```JavaScript
 <script src="http://coffeescript.org/v1/browser-compiler/coffee-script.js"></script>
 <script src="httpVueLoader.js"></script>
 
@@ -157,7 +156,7 @@ httpVueLoader.langProcessor.coffee = function(scriptText) {
 
 Then, in you `.vue` file:
 
-```
+```CoffeeScript
 ...
 <script lang="coffee">
 
@@ -173,6 +172,48 @@ module.exports =
 
 ```
 
+
+Example - Stylus:
+
+```JavaScript
+<script src="//stylus-lang.com/try/stylus.min.js"></script>
+<script src="httpVueLoader.js"></script>
+
+<script>
+
+httpVueLoader.langProcessor.stylus = function(stylusText) {
+
+	return new Promise(function(resolve, reject) {
+		
+		stylus.render(stylusText, {}, function(err, css) {
+
+			if (err) reject(err);
+			resolve(css);
+		});
+	})
+}
+
+</script>
+```
+
+```stylus
+...
+<style lang="stylus">
+
+	border-radius()
+		-webkit-border-radius: arguments
+		-moz-border-radius: arguments
+		border-radius: arguments
+
+	form input
+		padding: 5px
+		border: 1px solid
+		border-radius: 5px
+
+</style>
+...
+
+```
 
 ## How it works
 
