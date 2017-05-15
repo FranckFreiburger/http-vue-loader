@@ -6,22 +6,22 @@ Load .vue files directly from your html/js. No node.js environment, no build ste
 `my-component.vue`
 ```vue
 <template>
-	<div class="hello">Hello {{who}}</div>
+    <div class="hello">Hello {{who}}</div>
 </template>
 
 <script>
 module.exports = {
-	data: function() {
-		return {
-			who: 'world'
-		}
-	}
+    data: function() {
+        return {
+            who: 'world'
+        }
+    }
 }
 </script>
 
 <style>
 .hello {
-	background-color: #ffe;
+    background-color: #ffe;
 }
 </style>
 ```
@@ -34,11 +34,11 @@ using `httpVueLoader()`
 ...
 <script type="text/javascript">
 
-	new Vue({
-		components: {
-			'my-component': httpVueLoader('my-component.vue')
-		},
-		...
+    new Vue({
+        components: {
+            'my-component': httpVueLoader('my-component.vue')
+        },
+        ...
 ```
 
 or, using `httpVueLoaderRegister()`
@@ -47,13 +47,13 @@ or, using `httpVueLoaderRegister()`
 ...
 <script type="text/javascript">
 
-	httpVueLoaderRegister(Vue, 'my-component.vue');
+    httpVueLoaderRegister(Vue, 'my-component.vue');
 
-	new Vue({
-		components: [
-			'my-component'
-		},
-		...
+    new Vue({
+        components: [
+            'my-component'
+        },
+        ...
 ```
 
 or, using `httpVueLoader` as a plugin
@@ -62,22 +62,22 @@ or, using `httpVueLoader` as a plugin
 ...
 <script type="text/javascript">
 
-	Vue.use(httpVueLoader);
+    Vue.use(httpVueLoader);
 
-	new Vue({
-		components: {
-			'my-component': 'url:my-component.vue'
-		},
-		...
+    new Vue({
+        components: {
+            'my-component': 'url:my-component.vue'
+        },
+        ...
 ```
 
 or, using an array
 ```
-	new Vue({
-		components: [
-			'url:my-component.vue'
-		},
-		...
+    new Vue({
+        components: [
+            'url:my-component.vue'
+        },
+        ...
 ```
 
 ## Features
@@ -120,16 +120,16 @@ This is the default httpLoader.
 Use axios instead of the default http loader:
 ```
 httpVueLoader.httpRequest = function(url) {
-	
-	return axios.get(url)
-	.then(function(res) {
-		
-		return res.data;
-	})
-	.catch(function(err) {
-		
-		return Promise.reject(err.status);
-	});
+    
+    return axios.get(url)
+    .then(function(res) {
+        
+        return res.data;
+    })
+    .catch(function(err) {
+        
+        return Promise.reject(err.status);
+    });
 }
 ```
 
@@ -148,7 +148,7 @@ Example - CoffeeScript:
 
 httpVueLoader.langProcessor.coffee = function(scriptText) {
 
-	return window.CoffeeScript.compile(scriptText, {bare: true});
+    return window.CoffeeScript.compile(scriptText, {bare: true});
 }
 
 </script>
@@ -161,12 +161,12 @@ Then, in you `.vue` file:
 <script lang="coffee">
 
 module.exports =
-  components: {}
-  data: ->
-    {}
-  computed: {}
-  methods: {}
-  
+    components: {}
+    data: ->
+        {}
+    computed: {}
+    methods: {}
+
 </script>
 ...
 
@@ -183,14 +183,14 @@ Example - Stylus:
 
 httpVueLoader.langProcessor.stylus = function(stylusText) {
 
-	return new Promise(function(resolve, reject) {
-		
-		stylus.render(stylusText, {}, function(err, css) {
+    return new Promise(function(resolve, reject) {
+        
+        stylus.render(stylusText, {}, function(err, css) {
 
-			if (err) reject(err);
-			resolve(css);
-		});
-	})
+            if (err) reject(err);
+            resolve(css);
+        });
+    })
 }
 
 </script>
@@ -200,15 +200,15 @@ httpVueLoader.langProcessor.stylus = function(stylusText) {
 ...
 <style lang="stylus">
 
-	border-radius()
-		-webkit-border-radius: arguments
-		-moz-border-radius: arguments
-		border-radius: arguments
+    border-radius()
+        -webkit-border-radius: arguments
+        -moz-border-radius: arguments
+        border-radius: arguments
 
-	form input
-		padding: 5px
-		border: 1px solid
-		border-radius: 5px
+    form input
+        padding: 5px
+        border: 1px solid
+        border-radius: 5px
 
 </style>
 ...
