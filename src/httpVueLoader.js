@@ -21,7 +21,7 @@ var httpVueLoader = (function() {
 			
 			callback.call(this);
 
-			if ( this.component.baseURI )
+			if ( tmpBaseElt )
 				this.component.getHead().removeChild(tmpBaseElt);
 		},
 		
@@ -87,7 +87,7 @@ var httpVueLoader = (function() {
 
 			if ( scoped ) {
 				
-				// no template, no scopable style
+				// no template, no scopable style needed
 				if ( !hasTemplate )
 					return;
 				
@@ -411,7 +411,7 @@ var httpVueLoader = (function() {
 			xhr.send(null);
 		});
 	}
-	
+
 	httpVueLoader.langProcessor = {};
 
 	function httpVueLoader(url, name) {
