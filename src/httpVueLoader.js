@@ -269,7 +269,7 @@ var httpVueLoader = (function() {
 			return p
 			.then(function(content) {
 				
-				if ( eltCx.elt.hasAttribute('lang') ) {
+				if ( eltCx !== null && eltCx.elt.hasAttribute('lang') ) {
 					
 					var lang = eltCx.elt.getAttribute('lang');
 					eltCx.elt.removeAttribute('lang');
@@ -300,8 +300,8 @@ var httpVueLoader = (function() {
 		compile: function() {
 
 			return Promise.all(Array.prototype.concat(
-				this.template.compile(),
-				this.script.compile(),
+				this.template && this.template.compile(),
+				this.script && this.script.compile(),
 				this.styles.map(function(style) { return style.compile() })
 			))
 			.then(function() {
@@ -345,7 +345,7 @@ var httpVueLoader = (function() {
 			})
 			.then(function(component) {
 				
-				var exports = component.script.module.exports;
+				var exports = component.script !== null ? component.script.module.exports : {};
 				
 				if ( component.template !== null )
 					exports.template = component.template.getContent();
