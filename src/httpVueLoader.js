@@ -140,9 +140,14 @@ var httpVueLoader = (function() {
 		},
 		
 		compile: function(module) {
-
+			
+			var childModuleRequire = function(childUrl) {
+				
+				return httpVueLoader.require((childUrl.substr(0,2) === './' || childUrl.substr(0,3) === '../' ? this.component.baseURI : '') + childUrl);
+			}.bind(this);
+			
 			try {
-				Function('exports', 'require', 'module', this.getContent()).call(this.module.exports, this.module.exports, httpVueLoader.require, this.module);
+				Function('exports', 'require', 'module', this.getContent()).call(this.module.exports, this.module.exports, childModuleRequire, this.module);
 			} catch(ex) {
 				
 				if ( !('lineNumber' in ex) ) {
