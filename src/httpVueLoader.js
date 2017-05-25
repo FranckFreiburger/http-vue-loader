@@ -143,7 +143,8 @@ var httpVueLoader = (function() {
 			
 			var childModuleRequire = function(childUrl) {
 				
-				return httpVueLoader.require((childUrl.substr(0,2) === './' || childUrl.substr(0,3) === '../' ? this.component.baseURI : '') + childUrl);
+				var isRelative = childUrl.substr(0,2) === './' || childUrl.substr(0,3) === '../';
+				return httpVueLoader.require((isRelative ? this.component.baseURI : '') + childUrl);
 			}.bind(this);
 			
 			try {
