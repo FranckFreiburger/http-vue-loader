@@ -27,6 +27,32 @@ module.exports = {
 ```
 
 `myFile.html`
+minimalist (but complete) example:
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/http-vue-loader"></script>
+  </head>
+
+  <body>
+    <div id="my-app">
+      <my-component></my-component>
+    </div>
+
+    <script type="text/javascript">
+      new Vue({
+        el: '#my-app',
+        components: {
+          'my-component': httpVueLoader('my-component.vue')
+        }
+      });
+    </script>
+  </body>
+</html>
+```
+
 
 using `httpVueLoader()`
 
