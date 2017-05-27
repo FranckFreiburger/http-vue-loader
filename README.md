@@ -124,6 +124,25 @@ Latest ✔ | Latest ✔ | ? | ? | Latest ✔ | 9+ ✔ |
 * [Vue.js 2](https://vuejs.org/) ([compiler and runtime](https://vuejs.org/v2/guide/installation.html#Explanation-of-Different-Builds))
 * [es6-promise](https://github.com/stefanpenner/es6-promise) (optional, except for IE, Chrome < 33, FireFox < 29, [...](http://caniuse.com/#search=promise) )
 
+since some browsers do not allow XMLHttpRequest to access local files (Cross origin requests are only supported for protocol schemes: http, data, chrome, chrome-extension, https),
+you can start a small express server to run this example.
+
+Run the commands:
+`npm install express`
+`npm install serve-static`
+
+Create and configure an express server: 
+`server.js`
+```
+var path = require('path');
+var express = require('express');
+var serveStatic = require('serve-static');
+
+var app = express();
+app.use(serveStatic(__dirname, {'index': 'index.html'}));
+app.listen(8181);
+```
+Run the command `node server`
 
 ## API
 
