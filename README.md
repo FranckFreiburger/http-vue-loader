@@ -123,8 +123,9 @@ Latest ✔ | Latest ✔ | ? | ? | Latest ✔ | 9+ ✔ |
 ## Requirements
 * [Vue.js 2](https://vuejs.org/) ([compiler and runtime](https://vuejs.org/v2/guide/installation.html#Explanation-of-Different-Builds))
 * [es6-promise](https://github.com/stefanpenner/es6-promise) (optional, except for IE, Chrome < 33, FireFox < 29, [...](http://caniuse.com/#search=promise) )
+* webserver (optional)...
 
-since some browsers do not allow XMLHttpRequest to access local files (Cross origin requests are only supported for protocol schemes: http, data, chrome, chrome-extension, https),
+Since some browsers do not allow XMLHttpRequest to access local files (Cross origin requests are only supported for protocol schemes: http, data, chrome, chrome-extension, https),
 you can start a small express server to run this example.
 
 Run the commands:
