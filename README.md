@@ -27,7 +27,6 @@ module.exports = {
 ```
 
 `myFile.html`
-minimalist (but complete) example:
 ```html
 <!doctype html>
 <html lang="en">
