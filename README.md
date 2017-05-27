@@ -52,8 +52,8 @@ module.exports = {
 </html>
 ```
 
-
-using `httpVueLoader()`
+## More examples
+using `httpVueLoader()`  
 
 ```html
 ...
