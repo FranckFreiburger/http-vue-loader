@@ -26,7 +26,7 @@ module.exports = {
 </style>
 ```
 
-`myFile.html`
+`index.html`
 ```html
 <!doctype html>
 <html lang="en">
