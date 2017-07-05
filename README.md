@@ -66,13 +66,13 @@ using `httpVueLoader()`
         ...
 ```
 
-or, using `httpVueLoaderRegister()`
+or, using `httpVueLoader.register()`
 
 ```html
 ...
 <script type="text/javascript">
 
-    httpVueLoaderRegister(Vue, 'my-component.vue');
+    httpVueLoader.register(Vue, 'my-component.vue');
 
     new Vue({
         components: [
@@ -152,7 +152,7 @@ Run the command `node server`
 `url`: any url to a .vue file
 
 
-##### httpVueLoaderRegister(`vue`, `url`)
+##### httpVueLoader.register(`vue`, `url`)
 
 `vue`: a Vue instance  
 `url`: any url to a .vue file
