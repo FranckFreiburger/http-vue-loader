@@ -128,22 +128,11 @@ Latest ✔ | Latest ✔ | ? | ? | Latest ✔ | 9+ ✔ |
 Since some browsers do not allow XMLHttpRequest to access local files (Cross origin requests are only supported for protocol schemes: http, data, chrome, chrome-extension, https),
 you can start a small express server to run this example.
 
-Run the commands:
-`npm install express`
-`npm install serve-static`
-
-Create and configure an express server: 
-`server.js`
+Run the following commands to start a basic web server:
 ```
-var path = require('path');
-var express = require('express');
-var serveStatic = require('serve-static');
-
-var app = express();
-app.use(serveStatic(__dirname, {'index': 'index.html'}));
-app.listen(8181);
+npm install express
+node -e "require('express')().use(require('express').static(__dirname, {'index': 'index.html'})).listen(8181)"
 ```
-Run the command `node server`
 
 ## API
 
