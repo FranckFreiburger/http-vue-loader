@@ -186,7 +186,16 @@ var httpVueLoader = (function() {
 		
 		getRootElt: function() {
 			
-			return (this.elt.content || this.elt).firstElementChild;
+			var tplElt = this.elt.content || this.elt;
+			
+			if ( 'firstElementChild' in tplElt )
+				return tplElt.firstElementChild;
+			
+			for ( tplElt = tplElt.firstChild; tplElt !== null; tplElt = tplElt.nextSibling )
+				if ( tplElt.nodeType === Node.ELEMENT_NODE )
+					return tplElt;
+				
+			return null;
 		},
 		
 		compile: function() {
