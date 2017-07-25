@@ -131,7 +131,7 @@ you can start a small express server to run this example.
 Run the following commands to start a basic web server:
 ```
 npm install express
-node -e "require('express')().use(require('express').static(__dirname, {'index': 'index.html'})).listen(8181)"
+node -e "require('express')().use(require('express').static(__dirname, {index:'index.html'})).listen(8181)"
 ```
 
 ## API
