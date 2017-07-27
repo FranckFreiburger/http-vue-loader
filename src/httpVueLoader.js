@@ -143,14 +143,12 @@ var httpVueLoader = (function() {
 			
 			var childModuleRequire = function(childURL) {
 				
-				childURL = resolveURL(this.component.baseURI, childURL);
-				return httpVueLoader.require(childURL);
+				return httpVueLoader.require(resolveURL(this.component.baseURI, childURL));
 			}.bind(this);
 			
 			var childLoader = function(childURL, childName) {
 				
-				childURL = resolveURL(this.component.baseURI, childURL);
-				return httpVueLoader(childURL, childName);
+				return httpVueLoader(resolveURL(this.component.baseURI, childURL), childName);
 			}.bind(this);
 			
 			try {
@@ -347,11 +345,8 @@ var httpVueLoader = (function() {
 	
 	function resolveURL(baseURL, url) {
 		
-		if (url.substr(0, 2) === './') {
-			return baseURL + url.substr(2);
-		}
-		if (url.substr(0, 3) === '../') {
-			return baseURL + url.substr(3);
+		if (url.substr(0, 2) === './' || url.substr(0, 3) === '../') {
+			return baseURL + url;
 		}
 		return url;
 	}
