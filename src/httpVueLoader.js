@@ -141,14 +141,18 @@ var httpVueLoader = (function() {
 		
 		compile: function(module) {
 			
-			var childModuleRequire = function(childUrl) {
+			var childModuleRequire = function(childURL) {
 				
-				var isRelative = childUrl.substr(0,2) === './' || childUrl.substr(0,3) === '../';
-				return httpVueLoader.require((isRelative ? this.component.baseURI : '') + childUrl);
+				return httpVueLoader.require(resolveURL(this.component.baseURI, childURL));
+			}.bind(this);
+			
+			var childLoader = function(childURL, childName) {
+				
+				return httpVueLoader(resolveURL(this.component.baseURI, childURL), childName);
 			}.bind(this);
 			
 			try {
-				Function('exports', 'require', 'module', this.getContent()).call(this.module.exports, this.module.exports, childModuleRequire, this.module);
+				Function('exports', 'require', 'httpVueLoader', 'module', this.getContent()).call(this.module.exports, this.module.exports, childModuleRequire, childLoader, this.module);
 			} catch(ex) {
 				
 				if ( !('lineNumber' in ex) ) {
@@ -338,8 +342,16 @@ var httpVueLoader = (function() {
 			url: comp[1] + comp[2] + (comp[3] === undefined ? '/index.vue' : comp[3])
 		}
 	}
-
-
+	
+	function resolveURL(baseURL, url) {
+		
+		if (url.substr(0, 2) === './' || url.substr(0, 3) === '../') {
+			return baseURL + url;
+		}
+		return url;
+	}
+	
+	
 	httpVueLoader.load = function(url, name) {
 
 		return function() {
