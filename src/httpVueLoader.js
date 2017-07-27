@@ -141,17 +141,16 @@ var httpVueLoader = (function() {
 		
 		compile: function(module) {
 			
-			var childModuleRequire = function(childUrl) {
+			var childModuleRequire = function(childURL) {
 				
-				var isRelative = childUrl.substr(0,2) === './' || childUrl.substr(0,3) === '../';
-				return httpVueLoader.require((isRelative ? this.component.baseURI : '') + childUrl);
+				childURL = resolveURL(this.component.baseURI, childURL);
+				return httpVueLoader.require(childURL);
 			}.bind(this);
 			
-			var childLoader = function(childUrl) {
-				if (childUrl.substr(0,2) === './') {
-					childUrl = this.component.baseURI + childUrl.substr(2);
-				}
-				return httpVueLoader(childUrl);
+			var childLoader = function(childURL, childName) {
+				
+				childURL = resolveURL(this.component.baseURI, childURL);
+				return httpVueLoader(childURL, childName);
 			}.bind(this);
 			
 			try {
@@ -345,8 +344,19 @@ var httpVueLoader = (function() {
 			url: comp[1] + comp[2] + (comp[3] === undefined ? '/index.vue' : comp[3])
 		}
 	}
-
-
+	
+	function resolveURL(baseURL, url) {
+		
+		if (url.substr(0, 2) === './') {
+			return baseURL + url.substr(2);
+		}
+		if (url.substr(0, 3) === '../') {
+			return baseURL + url.substr(3);
+		}
+		return url;
+	}
+	
+	
 	httpVueLoader.load = function(url, name) {
 
 		return function() {
