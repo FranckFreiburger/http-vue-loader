@@ -375,6 +375,8 @@ var httpVueLoader = (function() {
 					if ( component.name !== undefined )
 						exports.name = component.name;
 
+				exports._baseURI = component.baseURI;
+
 				return exports;
 			});
 		};
@@ -401,10 +403,12 @@ var httpVueLoader = (function() {
 
 						var comp = parseComponentURL(components[componentName].substr(4));
 
+						var componentURL = ('_baseURI' in this.$options) ? resolveURL(this.$options._baseURI, comp.url) : comp.url;
+
 						if ( isNaN(componentName) )
-							components[componentName] = httpVueLoader.load(comp.url, componentName);
+							components[componentName] = httpVueLoader.load(componentURL, componentName);
 						else
-							components[componentName] = Vue.component(comp.name, httpVueLoader.load(comp.url, comp.name));
+							components[componentName] = Vue.component(comp.name, httpVueLoader.load(componentURL, comp.name));
 					}
 				}
 			}
