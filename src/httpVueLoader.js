@@ -340,6 +340,11 @@
 		this._scopeId = '';
 	}
 
+	function identity(value) {
+
+		return value;
+	}
+
 	function parseComponentURL(url) {
 
 		var comp = url.match(/(.*?)([^/]+?)\/?(\.vue)?(?:\?|#|$)/);
@@ -449,7 +454,11 @@
 		});
 	};
 
-	httpVueLoader.langProcessor = {};
+	httpVueLoader.langProcessor = {
+		html: identity,
+		js: identity,
+		css: identity
+	};
 
 	function httpVueLoader(url, name) {
 
