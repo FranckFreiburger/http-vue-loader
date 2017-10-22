@@ -1,4 +1,11 @@
-var httpVueLoader = (function() {
+(function umd(root,factory){
+	if(typeof module==='object' && typeof exports === 'object' )
+		module.export=factory()
+	else if(typeof define==='function' && define.amd)
+		define([],factory)
+	else
+		root.httpVueLoader=factory()
+})(this,function factory() {
 	'use strict';
 
 	var scopeIndex = 0;
@@ -451,4 +458,4 @@ var httpVueLoader = (function() {
 	}
 
 	return httpVueLoader;
-})();
+});
