@@ -77,6 +77,7 @@ or, using `httpVueLoader.register()`
     new Vue({
         components: [
             'my-component'
+            ]
         },
         ...
 ```
@@ -101,6 +102,7 @@ or, using an array
     new Vue({
         components: [
             'url:my-component.vue'
+            ]
         },
         ...
 ```
