@@ -248,7 +248,39 @@ httpVueLoader.langProcessor.stylus = function(stylusText) {
 
 </style>
 ...
+```
 
+Sass (SCSS) example. Since `sass.compile()` is asynchronous, a promise needs to be returned:
+
+```JavaScript
+<script src="sass.js"></script>
+<script src="httpVueLoader.js"></script>
+
+<script>
+    httpVueLoader.langProcessor.scss = function (scssText) {
+        return new Promise(function(resolve, reject) {
+            sass.compile(scssText, function (result) {
+                if ( result.status === 0 )
+                    resolve(result.text)
+                else
+                    reject(result)
+            });
+        });
+    }
+// ....
+```
+
+```scss
+...
+<style lang="scss">
+$font-stack:    Helvetica, sans-serif;
+$primary-color: #333;
+
+body {
+  font: 100% $font-stack;
+  color: $primary-color;
+}
+</style>
 ```
 
 ## How it works
