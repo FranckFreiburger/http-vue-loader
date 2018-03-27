@@ -170,7 +170,17 @@
 				throw new (ex.constructor)(ex.message, url, lineNumber);
 			}
 
-			return Promise.resolve(this.module.exports)
+			return new Promise(function(resolve) {
+
+				if ( typeof define !== 'function' || !define.amd )
+					return resolve();
+
+				require([ this.component.name ], function(component) {
+
+					this.module.exports = component.default;
+					resolve();
+				}.bind(this));
+			})
 			.then(function(exports) {
 
 				this.module.exports = exports;
