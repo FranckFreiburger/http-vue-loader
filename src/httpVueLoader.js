@@ -1,6 +1,6 @@
 (function umd(root,factory){
 	if(typeof module==='object' && typeof exports === 'object' )
-		module.export=factory()
+		module.exports=factory()
 	else if(typeof define==='function' && define.amd)
 		define([],factory)
 	else
