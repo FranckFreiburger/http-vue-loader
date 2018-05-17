@@ -1,6 +1,6 @@
 {
   "name": "http-vue-loader",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "description": "Load .vue files directly from your html/js. No node.js environment, no build step.",
   "main": "./src/httpVueLoader.js",
   "scripts": {
