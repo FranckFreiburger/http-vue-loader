@@ -154,7 +154,7 @@ node -e "require('express')().use(require('express').static(__dirname, {index:'i
 This is the default httpLoader.  
 
 Use axios instead of the default http loader:
-```
+```Javascript
 httpVueLoader.httpRequest = function(url) {
     
     return axios.get(url)
