@@ -170,7 +170,11 @@
 				throw new (ex.constructor)(ex.message, url, lineNumber);
 			}
 
-			return Promise.resolve(this.module.exports);
+			return Promise.resolve(this.module.exports)
+			.then(function(exports) {
+
+				this.module.exports = exports;
+			}.bind(this));
 		}
 	};
 
