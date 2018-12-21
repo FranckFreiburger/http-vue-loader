@@ -171,6 +171,7 @@
 			}
 
 			return Promise.resolve(this.module.exports)
+			.then(httpVueLoader.scriptExportsHandler.bind(this))
 			.then(function(exports) {
 
 				this.module.exports = exports;
@@ -463,6 +464,8 @@
 		js: identity,
 		css: identity
 	};
+
+	httpVueLoader.scriptExportsHandler = identity;
 
 	function httpVueLoader(url, name) {
 
