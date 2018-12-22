@@ -171,6 +171,7 @@
 			}
 
 			return Promise.resolve(this.module.exports)
+			.then(httpVueLoader.scriptExportsHandler.bind(this))
 			.then(function(exports) {
 
 				this.module.exports = exports;
@@ -297,10 +298,10 @@
 
 					var lang = eltCx.elt.getAttribute('lang');
 					eltCx.elt.removeAttribute('lang');
-					return httpVueLoader.langProcessor[lang.toLowerCase()](content === null ? eltCx.getContent() : content);
+					return httpVueLoader.langProcessor[lang.toLowerCase()].call(this, content === null ? eltCx.getContent() : content);
 				}
 				return content;
-			})
+			}.bind(this))
 			.then(function(content) {
 
 				if ( content !== null )
@@ -463,6 +464,8 @@
 		js: identity,
 		css: identity
 	};
+
+	httpVueLoader.scriptExportsHandler = identity;
 
 	function httpVueLoader(url, name) {
 
