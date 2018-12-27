@@ -244,7 +244,32 @@
 			return this._scopeId;
 		},
 
-		load: function(componentURL) {
+		load: function(componentURL, isLoadFromString) {
+
+			if (isLoadFromString) {
+				return new Promise((resolve)=>{
+					const doc = document.implementation.createHTMLDocument('');
+
+					doc.body.innerHTML = componentURL;
+
+					for ( let it = doc.body.firstChild; it; it = it.nextSibling ) {
+
+						switch ( it.nodeName ) {
+							case 'TEMPLATE':
+								this.template = new TemplateContext(this, it);
+								break;
+							case 'SCRIPT':
+								this.script = new ScriptContext(this, it);
+								break;
+							case 'STYLE':
+								this.styles.push(new StyleContext(this, it));
+								break;
+						}
+					}
+
+					resolve(this);
+				})
+			}
 
 			return httpVueLoader.httpRequest(componentURL)
 			.then(function(responseText) {
@@ -406,6 +431,38 @@
 		Vue.component(comp.name, httpVueLoader.load(comp.url));
 	};
 
+	httpVueLoader.registerString = function (Vue, string, name) {
+
+		Vue.component(name, () => new Component(name).load(string, true)
+																								 .then(function (component) {
+
+																									 return component.normalize();
+																								 })
+																								 .then(function (component) {
+
+																									 return component.compile();
+																								 })
+																								 .then(function (component) {
+
+																									 var exports = component.script !== null ? component.script.module.exports : {};
+
+																									 if (component.template !== null) {
+																										 exports.template = component.template.getContent();
+																									 }
+
+																									 if (exports.name === undefined) {
+																										 if (component.name !== undefined) {
+																											 exports.name = component.name;
+																										 }
+																									 }
+
+																									 exports._baseURI = component.baseURI;
+
+																									 return exports;
+																								 }))
+		;
+	};
+
 	httpVueLoader.install = function(Vue) {
 
 		Vue.mixin({
@@ -472,6 +529,28 @@
 		var comp = parseComponentURL(url);
 		return httpVueLoader.load(comp.url, name);
 	}
+
+	httpVueLoader.transformCode = function (string) {
+		return new Component()
+			.load(string, true)
+			.then(component => component.normalize())
+			.then(function (res) {
+				let newVue = '';
+				newVue += `<template>
+${res.template.getContent()}
+</template>
+    `;
+				/* eslint-disable */
+				newVue += '<script>\n' + res.script.getContent() + '\n<' + '/script> \n';
+				newVue += res.styles.reduce((acc, item) => acc + `<style${item.elt.hasAttribute('scoped') ? ' scoped' : ''}>
+${item.getContent()}
+</style>
+`, '');
+				return newVue;
+			});
+	};
+
+	httpVueLoader.Component = Component;
 
 	return httpVueLoader;
 });
