@@ -221,7 +221,7 @@ httpVueLoader.langProcessor.stylus = function(stylusText) {
 
     return new Promise(function(resolve, reject) {
         
-        stylus.render(stylusText, {}, function(err, css) {
+        stylus.render(stylusText.trim(), {}, function(err, css) {
 
             if (err) reject(err);
             resolve(css);
