@@ -388,9 +388,8 @@
 				if ( component.template !== null )
 					exports.template = component.template.getContent();
 
-				if ( exports.name === undefined )
-					if ( component.name !== undefined )
-						exports.name = component.name;
+				if ( exports.name === undefined && component.name !== undefined )
+					exports.name = component.name;
 
 				exports._baseURI = component.baseURI;
 
