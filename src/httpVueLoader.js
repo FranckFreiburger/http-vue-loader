@@ -246,6 +246,10 @@
 
 		load: function(componentURL) {
 
+                        var urlParts = componentURL.split("#");
+                        componentURL = urlParts[0];
+                        var componentName = urlParts[1];
+
 			return httpVueLoader.httpRequest(componentURL)
 			.then(function(responseText) {
 
@@ -255,7 +259,17 @@
 				// IE requires the <base> to come with <style>
 				doc.body.innerHTML = (this.baseURI ? '<base href="'+this.baseURI+'">' : '') + responseText;
 
-				for ( var it = doc.body.firstChild; it; it = it.nextSibling ) {
+                                var compElem;
+                                if (componentName == undefined)
+                                        compElem = doc.body;
+                                else {
+                                        compElem = doc.getElementById(componentName);
+                                        if (!compElem) {
+                                              throw "Named component section '" + componentName 
+                                                    + "' not found in '" + "'" + componentUrl + "'"; 
+                                        }
+                                }
+				for ( var it = compElem.firstChild; it; it = it.nextSibling ) {
 
 					switch ( it.nodeName ) {
 						case 'TEMPLATE':

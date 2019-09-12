@@ -1,5 +1,5 @@
 # http-vue-loader
-Load .vue files directly from your html/js. No node.js environment, no build step.
+Load .vue files directly from your html/js. No node.js environment, no build step. Multiple components in a single .vue file are supported.
 
 ## examples
 
@@ -53,6 +53,51 @@ module.exports = {
 ```
 
 ## More examples
+
+Multiple components in a single .vue file
+
+`index.html`
+```html
+...
+<script type="text/javascript">
+
+    new Vue({
+        components: {
+            'component0': httpVueLoader('my-components.vue#component0'),
+            'component1': httpVueLoader('my-components.vue#component1')
+        },
+        ...
+```
+
+`my-components.vue`
+```vue
+<div id="component0">
+    <template>
+        <div class="hello">Hello from component0 {{who}}</div>
+    </template>
+
+    <script>
+    module.exports = {
+        data: function() {
+            return {
+                who: 'world'
+            }
+        }
+    }
+    </script>
+
+    <style>
+    .hello {
+        background-color: #ffe;
+    }
+    </style>
+</div>
+
+<div id="component1">
+    <!-- Another component's definition... -->
+/div>
+```
+
 using `httpVueLoader()`  
 
 ```html
@@ -287,6 +332,8 @@ body {
 
 1. http request the vue file
 1. load the vue file in a document fragment
+1. if the URL includes fragment identifier (#), consider the inside of element
+   with ID matching this fragment; otherwise consider the whole vue file
 1. process each section (template, script and style)
 1. return a promise to Vue.js (async components)
 1. then Vue.js compiles and cache the component
