@@ -442,8 +442,8 @@
 		return new Promise(function(resolve, reject) {
 
 			var xhr = new XMLHttpRequest();
-            		xhr.responseType = 'text';
 			xhr.open('GET', url);
+            		xhr.responseType = 'text';
 
 			xhr.onreadystatechange = function() {
 
