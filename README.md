@@ -74,7 +74,7 @@ or, using `httpVueLoader()` with data url
 <script type="text/javascript">
 
     new Vue({
-		components: {
+        components: {
             'my-component': httpVueLoader('data:text/vue;base64,PHRlbXBsYXRlPg0KCTxkaXY+DQoJCUkgYW...')
         },
         ...
@@ -87,7 +87,7 @@ or, using `httpVueLoader()` with text scheme (keep attention to the escaped clos
 <script type="text/javascript">
 
     new Vue({
-		components: {
+        components: {
             'my-component': httpVueLoader(`text:<template>...</template><script><\/script><style></style>`)
         },
         ...
@@ -97,26 +97,26 @@ or, using `httpVueLoader()` with text scheme via inline script (keep attention t
 
 ```html
 ...
-<script type="text/vue" id="testcomponent">
-	<template>
-		...
-	</template>
+<script type="text/vue" id="my-component">
+    <template>
+        ...
+    </template>
 
-	<script>
-		module.exports = {
-			...
-		}
-	<\/script>
+    <script>
+        module.exports = {
+            ...
+        }
+    <\/script>
 
-	<style scoped>
-		...
-	</style>
+    <style scoped>
+        ...
+    </style>
 </script>
 <script type="text/javascript">
 
     new Vue({
-		components: {
-            'my-component': httpVueLoader('#testcomponent')
+        components: {
+            'my-component': httpVueLoader('#my-component')
         },
         ...
 ```
