@@ -1,5 +1,6 @@
 # http-vue-loader
 Load .vue files directly from your html/js. No node.js environment, no build step.
+
 Supports loading SFC files via XMLHttpRequest (http or data scheme) and text via text scheme or inline script elements.
 
 ## examples
