@@ -249,7 +249,7 @@
 			return httpVueLoader.httpRequest(componentURL)
 			.then(function(responseText) {
 
-				this.baseURI = componentURL.substr(0, componentURL.lastIndexOf('/')+1);
+				this.baseURI = (componentURL.substr(0, 5) === 'data:' ? '' : componentURL.substr(0, componentURL.lastIndexOf('/')+1));
 				var doc = document.implementation.createHTMLDocument('');
 
 				// IE requires the <base> to come with <style>
@@ -355,7 +355,7 @@
 		var comp = url.match(/(.*?)([^/]+?)\/?(\.vue)?(\?.*|#.*|$)/);
 		return {
 			name: comp[2],
-			url: comp[1] + comp[2] + (comp[3] === undefined ? '/index.vue' : comp[3]) + comp[4]
+			url: comp[1] + comp[2] + (comp[3] === undefined ? (comp[1].substr(0, 5) !== 'data:' ? '/index.vue' : '') : comp[3]) + comp[4]
 		};
 	}
 
