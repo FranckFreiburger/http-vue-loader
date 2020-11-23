@@ -1,3 +1,5 @@
+:warning: Vue3 support: https://github.com/FranckFreiburger/vue3-sfc-loader :warning:
+
 # http-vue-loader
 Load .vue files directly from your html/js. No node.js environment, no build step.
 
