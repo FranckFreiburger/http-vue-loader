@@ -452,11 +452,15 @@
 					if ( (xhr.status >= 200 && xhr.status < 300)) 
 						resolve(xhr.responseText);
 					else {
-						// fix for phonegap status
-						if(cordova !== 'undefined' && xhr.status === 0 && xhr.responseText !== '')
-							resolve(xhr.responseText)
-						else
-							reject(xhr.status);
+						try{
+							// fix for phonegap status
+							if(cordova !== 'undefined' && xhr.status === 0 && xhr.responseText !== '')
+								resolve(xhr.responseText)
+							else
+								reject(xhr.status);
+						} catch (e){
+							reject(xhr.status);								
+						}
 					}
 				}
 			};
