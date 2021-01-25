@@ -463,7 +463,8 @@
 	httpVueLoader.langProcessor = {
 		html: identity,
 		js: identity,
-		css: identity
+		css: identity,
+		less: identity
 	};
 
 	httpVueLoader.scriptExportsHandler = identity;
