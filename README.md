@@ -1,5 +1,9 @@
 :warning: **Vue3 support**: https://github.com/FranckFreiburger/vue3-sfc-loader :warning:
 
+:tada: **now [vue3-sfc-loader](https://github.com/FranckFreiburger/vue3-sfc-loader) also supports Vue2** :tada:
+
+
+
 # http-vue-loader
 Load .vue files directly from your html/js. No node.js environment, no build step.
 
