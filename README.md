@@ -1,7 +1,4 @@
-:warning: **Vue3 support**: https://github.com/FranckFreiburger/vue3-sfc-loader :warning:
-
-:tada: **now [vue3-sfc-loader](https://github.com/FranckFreiburger/vue3-sfc-loader) also supports Vue2** :tada:
-
+:tada: **http-vue-loader** evolved into [**vue3-sfc-loader**](https://github.com/FranckFreiburger/vue3-sfc-loader) that supports Vue2 and Vue3 :tada:
 
 
 # http-vue-loader
