@@ -32,32 +32,53 @@
 		},
 
 		scopeStyles: function(styleElt, scopeName) {
+			function getScopedRule(rule) {
+        var scopedSelectors = [];
+
+        rule.selectorText.split(/\s*,\s*/).forEach(function(sel) {
+          scopedSelectors.push(scopeName + " " + sel);
+          var segments = sel.match(/([^ :]+)(.+)?/);
+          scopedSelectors.push(segments[1] + scopeName + (segments[2] || ""));
+        });
+
+        var scopedRule =
+          scopedSelectors.join(",") +
+          rule.cssText.substr(rule.selectorText.length);
+
+        return scopedRule;
+      }
 
 			function process() {
+        var sheet = styleElt.sheet;
+        var rules = sheet.cssRules;
 
-				var sheet = styleElt.sheet;
-				var rules = sheet.cssRules;
+        for (var i = 0; i < rules.length; ++i) {
+          var rule = rules[i];
 
-				for ( var i = 0; i < rules.length; ++i ) {
+          if (rule.type === 1) {
+            sheet.deleteRule(i);
+            sheet.insertRule(getScopedRule(rule), i);
+          } else if (rule.type === 4) {
+            var tmpScopedMedia = "";
 
-					var rule = rules[i];
-					if ( rule.type !== 1 )
-						continue;
+            for (var j = 0; j < rule.cssRules.length; ++j) {
+              var mediaRule = rule.cssRules[j];
+              tmpScopedMedia += getScopedRule(mediaRule);
+            }
 
-					var scopedSelectors = [];
+            var mediaScoped =
+              "@media " +
+              rule.conditionText + "{" +
+              tmpScopedMedia +
+              "}";
 
-					rule.selectorText.split(/\s*,\s*/).forEach(function(sel) {
+            console.log(rule);
 
-						scopedSelectors.push(scopeName+' '+sel);
-						var segments = sel.match(/([^ :]+)(.+)?/);
-						scopedSelectors.push(segments[1] + scopeName + (segments[2]||''));
-					});
-
-					var scopedRule = scopedSelectors.join(',') + rule.cssText.substr(rule.selectorText.length);
-					sheet.deleteRule(i);
-					sheet.insertRule(scopedRule, i);
-				}
-			}
+            sheet.deleteRule(i);
+            sheet.insertRule(mediaScoped, i);
+          }
+        }
+      }
 
 			try {
 				// firefox may fail sheet.cssRules with InvalidAccessError
