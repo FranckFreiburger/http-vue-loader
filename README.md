@@ -104,7 +104,7 @@ or, using `httpVueLoader` as a plugin
 ```
 
 or, using an array
-```
+```js
     new Vue({
         components: [
             'url:my-component.vue'
@@ -217,7 +217,7 @@ module.exports =
 
 Example - Stylus:
 
-```JavaScript
+```vue
 <script src="//stylus-lang.com/try/stylus.min.js"></script>
 <script src="httpVueLoader.js"></script>
 
@@ -238,7 +238,7 @@ httpVueLoader.langProcessor.stylus = function(stylusText) {
 </script>
 ```
 
-```stylus
+```vue
 ...
 <style lang="stylus">
 
@@ -258,7 +258,7 @@ httpVueLoader.langProcessor.stylus = function(stylusText) {
 
 Sass (SCSS) example. Since `sass.compile()` is asynchronous, a promise needs to be returned:
 
-```JavaScript
+```vue
 <script src="sass.js"></script>
 <script src="httpVueLoader.js"></script>
 
@@ -276,7 +276,7 @@ Sass (SCSS) example. Since `sass.compile()` is asynchronous, a promise needs to 
 // ....
 ```
 
-```scss
+```vue
 ...
 <style lang="scss">
 $font-stack:    Helvetica, sans-serif;
