@@ -7,6 +7,8 @@
 # http-vue-loader
 Load .vue files directly from your html/js. No node.js environment, no build step.
 
+Supports loading SFC files via XMLHttpRequest (http or data scheme) and text via text scheme or inline script elements.
+
 ## examples
 
 `my-component.vue`
@@ -68,6 +70,60 @@ using `httpVueLoader()`
     new Vue({
         components: {
             'my-component': httpVueLoader('my-component.vue')
+        },
+        ...
+```
+
+or, using `httpVueLoader()` with data url
+
+```html
+...
+<script type="text/javascript">
+
+    new Vue({
+        components: {
+            'my-component': httpVueLoader('data:text/vue;base64,PHRlbXBsYXRlPg0KCTxkaXY+DQoJCUkgYW...')
+        },
+        ...
+```
+
+or, using `httpVueLoader()` with text scheme (keep attention to the escaped closing script tag)
+
+```html
+...
+<script type="text/javascript">
+
+    new Vue({
+        components: {
+            'my-component': httpVueLoader(`text:<template>...</template><script><\/script><style></style>`)
+        },
+        ...
+```
+
+or, using `httpVueLoader()` with text scheme via inline script (keep attention to the escaped closing script tag)
+
+```html
+...
+<script type="text/vue" id="my-component">
+    <template>
+        ...
+    </template>
+
+    <script>
+        module.exports = {
+            ...
+        }
+    <\/script>
+
+    <style scoped>
+        ...
+    </style>
+</script>
+<script type="text/javascript">
+
+    new Vue({
+        components: {
+            'my-component': httpVueLoader('#my-component')
         },
         ...
 ```
@@ -162,14 +218,14 @@ This is the default httpLoader.
 Use axios instead of the default http loader:
 ```Javascript
 httpVueLoader.httpRequest = function(url) {
-    
+
     return axios.get(url)
     .then(function(res) {
-        
+
         return res.data;
     })
     .catch(function(err) {
-        
+
         return Promise.reject(err.status);
     });
 }
@@ -226,7 +282,7 @@ Example - Stylus:
 httpVueLoader.langProcessor.stylus = function(stylusText) {
 
     return new Promise(function(resolve, reject) {
-        
+
         stylus.render(stylusText.trim(), {}, function(err, css) {
 
             if (err) reject(err);
@@ -301,7 +357,7 @@ body {
 ## Notes
 
 The aim of http-vue-loader is to quickly test .vue components without any compilation step.  
-However, for production, I recommend to use [webpack module bundler](https://webpack.github.io/docs/) with [vue-loader](https://github.com/vuejs/vue-loader), 
+However, for production, I recommend to use [webpack module bundler](https://webpack.github.io/docs/) with [vue-loader](https://github.com/vuejs/vue-loader),
 [webpack-simple](https://github.com/vuejs-templates/webpack-simple) is a good minimalist webpack config you should look at.  
 BTW, see also [why Vue.js doesn't support templateURL](https://vuejs.org/2015/10/28/why-no-template-url/).  
 

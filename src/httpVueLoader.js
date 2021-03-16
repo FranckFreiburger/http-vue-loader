@@ -9,6 +9,7 @@
 	'use strict';
 
 	var scopeIndex = 0;
+	var textComponentIndex = 0;
 
 	StyleContext.prototype = {
 
@@ -246,10 +247,9 @@
 
 		load: function(componentURL) {
 
-			return httpVueLoader.httpRequest(componentURL)
-			.then(function(responseText) {
+			let interpretFunction = function(responseText) {
 
-				this.baseURI = componentURL.substr(0, componentURL.lastIndexOf('/')+1);
+				this.baseURI = (componentURL.substr(0, 5) === 'data:' || componentURL.substr(0, 5) === 'text:' ? '' : componentURL.substr(0, componentURL.lastIndexOf('/')+1));
 				var doc = document.implementation.createHTMLDocument('');
 
 				// IE requires the <base> to come with <style>
@@ -271,7 +271,14 @@
 				}
 
 				return this;
-			}.bind(this));
+			}.bind(this);
+
+			if (componentURL.substr(0, 5) === 'text:') {
+				return httpVueLoader.textPromise(componentURL).then(interpretFunction);
+			}
+			else {
+				return httpVueLoader.httpRequest(componentURL).then(interpretFunction);
+			}
 		},
 
 		_normalizeSection: function(eltCx) {
@@ -352,11 +359,25 @@
 
 	function parseComponentURL(url) {
 
-		var comp = url.match(/(.*?)([^/]+?)\/?(\.vue)?(\?.*|#.*|$)/);
-		return {
-			name: comp[2],
-			url: comp[1] + comp[2] + (comp[3] === undefined ? '/index.vue' : comp[3]) + comp[4]
-		};
+		if (url.substr(0, 5) === 'text:') {
+			return {
+				name: 'textComponent' + (textComponentIndex++),
+				url: url
+			};
+		}
+		else if (url.substr(0, 1) === '#') {
+			return {
+				name: url.substr(1),
+				url: 'text:' + document.getElementById(url.substr(1)).innerHTML.replace('<\\/script>', '</script>').trim()
+			};
+		}
+		else {
+			var comp = url.match(/(.*?)([^/]+?)\/?(\.vue)?(\?.*|#.*|$)/);
+			return {
+				name: comp[2],
+				url: comp[1] + comp[2] + (comp[3] === undefined ? (comp[1].substr(0, 5) !== 'data:' ? '/index.vue' : '') : comp[3]) + comp[4]
+			};
+		}
 	}
 
 	function resolveURL(baseURL, url) {
@@ -457,6 +478,13 @@
 			};
 
 			xhr.send(null);
+		});
+	};
+
+	httpVueLoader.textPromise = function(url) {
+
+		return new Promise(function(resolve, reject) {
+			resolve(url.substr(5));
 		});
 	};
 
