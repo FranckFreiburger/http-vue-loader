@@ -351,12 +351,8 @@
 	}
 
 	function parseComponentURL(url) {
-
-		var comp = url.match(/(.*?)([^/]+?)\/?(\.vue)?(\?.*|#.*|$)/);
-		return {
-			name: comp[2],
-			url: comp[1] + comp[2] + (comp[3] === undefined ? '/index.vue' : comp[3]) + comp[4]
-		};
+        var name = url.match(/\/(.+)\.vue[^\/]*$/)[1]
+        return {url: url, name: name}
 	}
 
 	function resolveURL(baseURL, url) {
