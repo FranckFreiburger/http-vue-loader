@@ -351,7 +351,8 @@
 	}
 
 	function parseComponentURL(url) {
-        return url
+        var name = url.match(/\/(.+)\.vue[^\/]*$/)[1]
+        return {url: url, name: name}
 	}
 
 	function resolveURL(baseURL, url) {
